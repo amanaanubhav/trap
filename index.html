@@ -3,29 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Service Unavailable | Trap RAG</title>
+    <title>Service Unavailable | Trap</title>
     <style>
         :root {
-            --bg-color: #0f1115;
-            --text-primary: #f0f0f0;
-            --text-secondary: #8b949e;
-            --accent-color: #2ea043;
-            --accent-hover: #3fb950;
-            --card-bg: #161b22;
-            --border-color: #30363d;
-            --error-color: #f85149;
+            --bg: #0f1115;
+            --text: #f0f0f0;
+            --muted: #8b949e;
+            --card: #161b22;
+            --border: #30363d;
+            --red: #f85149;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-primary);
+            background: var(--bg);
+            color: var(--text);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -34,165 +28,220 @@
         }
 
         .container {
-            max-width: 600px;
-            padding: 40px;
+            max-width: 620px;
+            padding: 32px 20px;
             text-align: center;
             animation: fadeIn 0.8s ease-out;
         }
 
         .card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
+            background: var(--card);
+            border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 48px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+            padding: 48px 40px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.25);
             position: relative;
             overflow: hidden;
         }
 
-        /* Subtle top border accent */
         .card::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
+            top: 0; left: 0; right: 0;
             height: 4px;
             background: linear-gradient(90deg, #ff7b72, #f85149);
         }
 
-        .status-container {
+        .status {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 12px;
+            gap: 10px;
             margin-bottom: 24px;
         }
 
-        .status-dot {
-            width: 12px;
-            height: 12px;
-            background-color: var(--error-color);
+        .dot {
+            width: 10px; height: 10px;
+            background: var(--red);
             border-radius: 50%;
-            box-shadow: 0 0 10px var(--error-color);
             animation: pulse 2s infinite;
         }
 
-        h1 {
-            font-size: 2rem;
+        .status span {
+            color: var(--red);
             font-weight: 600;
-            margin-bottom: 16px;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 14px;
             letter-spacing: -0.5px;
         }
 
-        p {
-            color: var(--text-secondary);
-            font-size: 1.05rem;
-            margin-bottom: 24px;
+        .desc {
+            color: var(--muted);
+            font-size: 1rem;
+            margin-bottom: 28px;
         }
 
         .divider {
             height: 1px;
-            background-color: var(--border-color);
-            margin: 32px 0;
+            background: var(--border);
+            margin: 28px 0;
         }
 
-        .local-setup {
-            background-color: rgba(48, 54, 61, 0.5);
+        .setup {
+            background: rgba(48, 54, 61, 0.5);
             border-radius: 8px;
-            padding: 24px;
-            margin-bottom: 32px;
+            padding: 22px;
+            margin-bottom: 28px;
             text-align: left;
         }
 
-        .local-setup h2 {
-            font-size: 1.1rem;
-            color: var(--text-primary);
-            margin-bottom: 12px;
+        .setup h2 {
+            font-size: 1.05rem;
+            margin-bottom: 10px;
         }
 
-        .local-setup p {
-            font-size: 0.95rem;
-            margin-bottom: 16px;
+        .setup p {
+            color: var(--muted);
+            font-size: 0.92rem;
+            margin-bottom: 14px;
         }
 
-        .github-btn {
+        .code {
+            font-family: "SF Mono", "Fira Code", monospace;
+            color: var(--muted);
+            background: #0d1117;
+            padding: 12px 14px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            font-size: 0.88rem;
+            margin-bottom: 0;
+            word-break: break-all;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
             display: inline-flex;
             align-items: center;
-            justify-content: center;
             gap: 8px;
-            background-color: var(--text-primary);
-            color: var(--bg-color);
             text-decoration: none;
-            padding: 12px 24px;
+            padding: 11px 22px;
             border-radius: 6px;
             font-weight: 600;
-            font-size: 1rem;
+            font-size: 0.95rem;
             transition: all 0.2s ease;
         }
 
-        .github-btn:hover {
-            background-color: #d1d5da;
+        .btn:hover {
             transform: translateY(-2px);
+        }
+
+        .btn-github {
+            background: var(--text);
+            color: var(--bg);
+        }
+
+        .btn-github:hover {
+            background: #d1d5da;
             box-shadow: 0 4px 12px rgba(255,255,255,0.1);
         }
 
-        .github-btn svg {
-            width: 20px;
-            height: 20px;
+        .btn-website {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-website:hover {
+            border-color: var(--muted);
+            box-shadow: 0 4px 12px rgba(255,255,255,0.05);
+        }
+
+        .btn svg {
+            width: 18px; height: 18px;
             fill: currentColor;
         }
 
+        .footer {
+            margin-top: 24px;
+            color: var(--muted);
+            font-size: 0.82rem;
+        }
+
+        .footer a {
+            color: var(--muted);
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+
+        .footer a:hover { color: var(--text); }
+
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
+            from { opacity: 0; transform: translateY(16px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
         @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(248, 81, 73, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(248, 81, 73, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(248, 81, 73, 0); }
+            0%, 100% { box-shadow: 0 0 0 0 rgba(248,81,73,0.4); }
+            70% { box-shadow: 0 0 0 8px rgba(248,81,73,0); }
         }
     </style>
 </head>
 <body>
-
     <div class="container">
         <div class="card">
-            <div class="status-container">
-                <div class="status-dot"></div>
-                <span style="color: var(--error-color); font-weight: 600; letter-spacing: 1px; text-transform: uppercase; font-size: 0.85rem;">System Overloaded</span>
+            <div class="status">
+                <div class="dot"></div>
+                <span>Service Paused</span>
             </div>
-            
-            <h1>Service Temporarily Down</h1>
-            <p>
-                Due to high traffic, we have temporarily exceeded our API limits and cloud server memory capacity. The online version of <strong>Trap</strong> is currently paused.
+
+            <h1>Trap is temporarily offline</h1>
+            <p class="desc">
+                The hosted version has hit its API rate limits or the free server ran out of memory. This is a limitation of the free hosting tier, not a bug.
             </p>
 
             <div class="divider"></div>
 
-            <div class="local-setup">
-                <h2>Run it locally for free</h2>
+            <div class="setup">
+                <h2>Run it on your machine instead</h2>
                 <p>
-                    You don't have to wait! Trap is open-source. You can download the code and run the exact same software on your own computer instantly, without any cloud limits.
+                    Trap is fully open-source. Clone the repo, add your own free Groq API key, and you'll have the exact same app running locally with zero limits.
                 </p>
-                <p style="font-family: monospace; color: var(--text-secondary); background: #0d1117; padding: 12px; border-radius: 6px; border: 1px solid var(--border-color); margin-bottom: 0;">
-                    git clone https://github.com/amanaanubhav/trap.git
+                <p class="code">
+                    git clone https://github.com/amanaanubhav/trap.git<br>
+                    cd trap<br>
+                    pip install -r requirements.txt<br>
+                    streamlit run app.py
                 </p>
             </div>
 
-            <a href="https://github.com/amanaanubhav/trap" target="_blank" rel="noopener noreferrer" class="github-btn">
-                <svg viewBox="0 0 24 24">
-                    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
-                </svg>
-                View on GitHub
-            </a>
+            <div class="buttons">
+                <a href="https://github.com/amanaanubhav/trap" target="_blank" rel="noopener noreferrer" class="btn btn-github">
+                    <svg viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                    GitHub Repo
+                </a>
+                <a href="https://amananubhav.com" target="_blank" rel="noopener noreferrer" class="btn btn-website">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                    My Website
+                </a>
+            </div>
+
+            <p class="footer">
+                Built by <a href="https://amananubhav.com" target="_blank">Aman Anubhav</a>
+            </p>
         </div>
     </div>
-
-    <script>
-        
-        console.log("Trap fallback page loaded.");
-    </script>
 </body>
 </html>

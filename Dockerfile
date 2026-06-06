@@ -13,6 +13,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-RUN chmod +x start.sh
-# use our wrapper script to handle process crashes and serve fallback
-CMD ["./start.sh"]
+CMD ["python", "server.py"]
