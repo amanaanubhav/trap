@@ -9,3 +9,4 @@ docx2txt
 beautifulsoup4
 python-dotenv
 sentence-transformers
+torchvision
