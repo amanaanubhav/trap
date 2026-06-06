@@ -1,0 +1,21 @@
+# Environments
+venv/
+.venv/
+env/
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Streamlit
+.streamlit/
+
+# Databases
+chroma_db/
+*.sqlite3
+
+# OS generated files
+.DS_Store
+Thumbs.db
