@@ -16,7 +16,6 @@ load_dotenv()
 
 st.set_page_config(page_title="Minimal RAG", page_icon="📓", layout="centered")
 
-# Custom CSS removed to prevent black screen / theme conflicts
 
 @st.cache_resource(show_spinner=False)
 def get_embeddings():
