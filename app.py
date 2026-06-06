@@ -4,82 +4,19 @@ import streamlit as st
 from dotenv import load_dotenv
 
 from langchain_community.document_loaders import TextLoader, PyPDFLoader, Docx2txtLoader, WebBaseLoader
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores import Chroma
 from langchain_groq import ChatGroq
-from langchain.chains import create_retrieval_chain
-from langchain.chains.combine_documents import create_stuff_documents_chain
+from langchain_core.runnables import RunnablePassthrough
+from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 
 load_dotenv()
 
 st.set_page_config(page_title="Minimal RAG", page_icon="📓", layout="centered")
 
-def inject_custom_css():
-    st.markdown("""
-    <style>
-        #MainMenu {visibility: hidden;}
-        header {visibility: hidden;}
-        footer {visibility: hidden;}
-        .stDeployButton {display: none;}
-        
-        .stApp {
-            background-color: #FCFCFC;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        }
-        
-        [data-testid="stChatMessageAvatarUser"] {
-            display: none;
-        }
-        [data-testid="stChatMessageAvatarAssistant"] {
-            display: none;
-        }
-        
-        .stChatMessage {
-            background-color: transparent !important;
-            padding: 1.5rem 0;
-            border-bottom: 1px solid #F0F0F0;
-            gap: 0;
-        }
-        
-        [data-testid="chat-message-user"] {
-            background-color: transparent !important;
-        }
-        [data-testid="chat-message-user"] .stMarkdown p {
-            color: #111111;
-            font-weight: 500;
-            font-size: 1.05rem;
-            line-height: 1.6;
-        }
-        
-        [data-testid="chat-message-assistant"] {
-            background-color: transparent !important;
-        }
-        [data-testid="chat-message-assistant"] .stMarkdown p {
-            color: #555555;
-            font-weight: 400;
-            font-size: 1.05rem;
-            line-height: 1.6;
-        }
-        
-        .stChatInputContainer {
-            padding-bottom: 2rem;
-        }
-        
-        h1 {
-            font-weight: 300;
-            color: #222;
-            letter-spacing: -0.5px;
-            margin-bottom: 0.5rem;
-        }
-        p {
-            color: #666;
-        }
-    </style>
-    """, unsafe_allow_html=True)
-
-inject_custom_css()
+# Custom CSS removed to prevent black screen / theme conflicts
 
 @st.cache_resource(show_spinner=False)
 def get_embeddings():
@@ -149,8 +86,15 @@ def create_rag_chain(vectorstore, groq_api_key):
         ("human", "{input}"),
     ])
     
-    question_answer_chain = create_stuff_documents_chain(llm, prompt)
-    rag_chain = create_retrieval_chain(retriever, question_answer_chain)
+    def format_docs(docs):
+        return "\n\n".join(doc.page_content for doc in docs)
+        
+    rag_chain = (
+        {"context": retriever | format_docs, "input": RunnablePassthrough()}
+        | prompt
+        | llm
+        | StrOutputParser()
+    )
     
     return rag_chain
 
@@ -221,8 +165,7 @@ else:
         with st.chat_message("assistant"):
             with st.spinner("Thinking..."):
                 try:
-                    response = st.session_state.chain.invoke({"input": prompt})
-                    answer = response["answer"]
+                    answer = st.session_state.chain.invoke(prompt)
                     st.markdown(answer)
                     st.session_state.messages.append({"role": "assistant", "content": answer})
                 except Exception as e:
