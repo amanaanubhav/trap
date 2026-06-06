@@ -12,11 +12,13 @@ from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 
+# load environment variables (e.g. API keys)
 load_dotenv()
 
 st.set_page_config(page_title="Minimal RAG", page_icon="📓", layout="centered")
 
 
+# cache embeddings to prevent reloading the model on every UI interaction
 @st.cache_resource(show_spinner=False)
 def get_embeddings():
     return HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
@@ -65,6 +67,7 @@ def process_documents(uploaded_files, web_url):
     vectorstore = Chroma.from_documents(documents=splits, embedding=embeddings)
     return vectorstore
 
+# setup the main RAG chain with Groq
 def create_rag_chain(vectorstore, groq_api_key):
     llm = ChatGroq(
         api_key=groq_api_key,
@@ -164,7 +167,7 @@ else:
         with st.chat_message("assistant"):
             with st.spinner("Thinking..."):
                 try:
-                    answer = st.session_state.chain.invoke(prompt)
+                    answer = generate_response(st.session_state.chain, prompt)
                     st.markdown(answer)
                     st.session_state.messages.append({"role": "assistant", "content": answer})
                 except Exception as e:
