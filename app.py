@@ -167,7 +167,7 @@ else:
         with st.chat_message("assistant"):
             with st.spinner("Thinking..."):
                 try:
-                    answer = generate_response(st.session_state.chain, prompt)
+                    answer = st.session_state.chain.invoke(prompt)
                     st.markdown(answer)
                     st.session_state.messages.append({"role": "assistant", "content": answer})
                 except Exception as e:
