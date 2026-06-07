@@ -1,4 +1,4 @@
-# Minimal RAG Chatbot
+# AI RAG Chatbot
 
 A simple, locally-embeddable Retrieval-Augmented Generation (RAG) chatbot using Streamlit, LangChain, and Groq.
 
