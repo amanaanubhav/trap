@@ -8,3 +8,8 @@ __pycache__/
 .gitignore
 chroma_db/
 .streamlit/
+
+# not needed on render
+app.py
+requirements.txt
+README.md
